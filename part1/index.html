@@ -361,19 +361,25 @@ public class Kurssisuoritus {
     <div class="exercise__body">
       
   <p>
+    <em>
+      Tehtävässä ei ole automaattisia testejä. Palauta tehtävä kun se täyttää tehtävän vaatimukset.
+    </em>
+  </p>
+  
+  <p>
     Alla on kuvattuna erään kirjojen lainausjärjestelmän luokkakaavio. Luo tehtäväpohjaan luokkakaavion esittämät luokat ja lisää luokkiin tarvittavat oliomuuttujat. 
   </p>
 
   <figure>
     <img src="../img/kirjastojarjestelma-aace25a8.png" alt="[Kirja|nimi:String;kirjoittaja:String;julkaisuvuosi:Integer]
-								       [Hylly|sijainti:String]
-								       [Nide|tunnus:Integer]
-								       [Henkilo|nimi:String]
-								       [Laina|alku:Date;loppu:Date;palautettu:Boolean]
-								       [Nide]*-1[Hylly]
-								       [Kirja]1-*[Nide]
-								       [Laina]*-1[Henkilo]
-								       [Nide]1-*[Laina]"/>
+						 [Hylly|sijainti:String]
+						 [Nide|tunnus:Integer]
+						 [Henkilo|nimi:String]
+						 [Laina|alku:Date;loppu:Date;palautettu:Boolean]
+						 [Nide]*-1[Hylly]
+						 [Kirja]1-*[Nide]
+						 [Laina]*-1[Henkilo]
+						 [Nide]1-*[Laina]"/>
   </figure>
 
 
@@ -418,8 +424,8 @@ pw.close();
 // List&lt;Opiskelija&gt; opiskelijat
 
 Files.lines(Paths.get("opiskelija.data")).forEach(rivi -&gt; {
-    String[] palat = rivi.split("\t");
-    opiskelijat.add(new Opiskelija(palat[0], palat[1]));
+String[] palat = rivi.split("\t");
+opiskelijat.add(new Opiskelija(palat[0], palat[1]));
 });
 </code></pre>
 
@@ -454,6 +460,12 @@ pw.close();
   <div class="collapse">
     <div class="exercise__body">
       
+  <p>
+    <em>
+      Tehtävässä ei ole automaattisia testejä. Palauta tehtävä kun se täyttää tehtävän vaatimukset.
+    </em>
+  </p>
+  
   <p>
     Tehtäväpohjassa on ohjelmakoodi opiskelijoiden lukemiseen ja tallentamiseen sekä kurssisuoritusten tallentamiseen. Täydennä ohjelmaa siten, että myös kurssisuoritusten lukeminen onnistuu -- kurssisuoritusten tulee sisältää viitteet opiskelijoihin.
   </p>
@@ -570,6 +582,12 @@ System.out.println("Haetun opiskelijan nimi on " + new String(nimi).trim());
   <div class="collapse">
     <div class="exercise__body">
       
+  <p>
+    <em>
+      Tehtävässä ei ole automaattisia testejä. Palauta tehtävä kun se täyttää tehtävän vaatimukset.
+    </em>
+  </p>
+  
   <p>
     Alla on kuvattuna erään viestijärjestelmän luokkakaavio. Jokaisella viestillä on sekä vastaanottaja että lähettäjä, jonka lisäksi viestiin kuuluu viestin sisältö. Käyttäjästä tallennetaan järjestelmään käyttäjätunnus, salasana, nimi, osoite ja puhelinnumero.
   </p>
