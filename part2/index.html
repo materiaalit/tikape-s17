@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tietokantojen perusteet - syksy 2017 | Osa 2</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <link href="../stylesheets/styles-cbde3c5b.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/xcode.min.css">
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.1/cookieconsent.min.css" />
+
+    <link rel="stylesheet" href="//2017-ohjelmointi.github.io/cdn/code-states-visualizer.css" />
+
+      <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-47575342-7', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div class="header-wrapper">
+        <div class="browser-support-warning" id="browser-support-warning" style="display: none;">
+  Kaikki tämän materiaalin osat eivät välttämättä tuo nykyistä selaintasi. Voisitko harkita vaihtamista <a href="https://www.google.com/chrome/browser/desktop/" target="_blank">Chrome</a> tai <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Firefox</a> selaimeen?
+  <span class="browser-support-warning__close">Selvä!</span>
+</div>
+
+
+        <nav class="navbar navbar-light bg-white">
+  <a class="navbar-brand" href="http://mooc.fi" alt="MOOC" target="_blank">
+    <span class="icon-mooc"></span>
+  </a>
+
+  <ul class="nav navbar-nav hidden-md-down">
+      <li class="nav-item ">
+        <a href="../" class="nav-link" onclick="ga('send', 'event', 'navigation_topic_link', 'click', '#&lt;Middleman::Sitemap::Resource path=index.html&gt;')">Johdanto</a>
+      </li>
+      <li class="nav-item ">
+        <a href="../part1/" class="nav-link" onclick="ga('send', 'event', 'navigation_topic_link', 'click', '#&lt;Middleman::Sitemap::Resource path=part1.html&gt;')">Osa 1</a>
+      </li>
+      <li class="nav-item active">
+        <a href="./" class="nav-link" onclick="ga('send', 'event', 'navigation_topic_link', 'click', '#&lt;Middleman::Sitemap::Resource path=part2.html&gt;')">Osa 2</a>
+      </li>
+  </ul>
+
+  <div class="float-xs-right navbar__buttons">
+    <div class="dropdown" id="mobile-nav-dropdown">
+      <button class="btn btn-secondary dropdown-toggle navbar__mobile-nav-toggle" data-toggle="dropdown">
+        <i class="fa fa-bars"></i>
+      </button>
+
+      <div class="dropdown-menu">
+      </div>
+    </div>
+
+    <a href="https://riot.im/app/#/room/#_ircnet_#tikape:irc.snt.utwente.nl" target="_blank" rel="noopener" class="btn btn-secondary">
+      <span class="hidden-md-down">Chat</span>
+      <i class="fa fa-commenting-o hidden-lg-up"></i>
+    </a>
+
+    <button class="btn btn-secondary" id="table-of-contents-toggle">
+      <span class="hidden-md-down">Sisällysluettelo</span>
+      <i class="fa fa-ellipsis-h hidden-lg-up"></i>
+    </button>
+
+    <button class="btn btn-primary" id="tmc-login-toggle">Kirjaudu sisään</button>
+  </div>
+</nav>
+
+      </div>
+
+      <div class="content-wrapper">
+        <div class="container material" id="material">
+            <div class="exercise-list">
+  <div class="exercise-list__header">
+    Tehtävät
+  </div>
+
+  <div class="exercise-list__content" id="exercise-list"></div>
+
+    <div class="exercise-list__quiznator">
+      <div class="quiznator-dashboard"></div>
+
+    </div>
+</div>
+
+
+          
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Toisen osan oppimistavoitteet
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Ymmärtää että tietoa voidaan käsitellä erilaisilla abstraktiotasoilla. Osaa luoda SQL-kielellä yhden tietokantataulun sisältävän tietokannan, lisätä tietokantatauluun tietoa ja tehdä kyselyitä tietokantatauluun. Osaa luoda ohjelman, joka kommunikoi tietokannanhallintajärjestelmän kanssa valmiin rajapinnan kautta. Tuntee käsitteen SQL-injektio. Tietää menetelmiä SQL-injektioon perustuvien hyökkäysten tekemiseen ja osaa toisaalta puolustautua niiltä.    
+  </p>
+  
+
+  </div>
+</div>
+
+
+
+<h1 class="material-heading">
+    Erilaiset näkymät tietoon 
+
+</h1>
+
+<p>
+  Edellisessä osassa tietoa tarkasteltiin sen tallennustavan kautta. Käsittelimme menetelmiä tallentaa ja lukea tietoa tiedostosta. Tietokannanhallintajärjestelmän toteutuksen ja tarjoaman käsittelyn näkökulmasta esimerkkimme liittyivät fyysiseen toteutukseen, eli miten ja missä muodossa tieto lopulta tallennetaan.
+</p>
+
+<p>
+  Tietokannanhallintajärjestelmistä ja tallennettavasta tiedosta puhuttaessa tietoa käsitellään tyypillisesti kolmella eri abstraktiotasolla: käsitteellisellä abstraktiotasolla, rakenteellisella abstraktiotasolla ja fyysisellä abstraktiotasolla.
+</p>
+
+<p>
+  <strong>Käsitteellinen abstraktiotaso</strong> (conceptual level) on kuvaus tietokantaan tallennettavista käsitteistä ja niiden yhteyksistä. Käsitteellisellä abstraktiotasolla kuvaus esiintyy esimerkiksi tekstidokumenteissa, puheissa, tai vaikkapa multimediaesityksissä. 
+</p>
+
+<p>
+  Pankin tallennustoiminnallisuudesta kertova asiakas saattaa kertoa tileistä ja niiden omistajista seuraavaa: <em>Tileillä on omistajia, joista jokainen yksilöidään henkilöturvatunnuksen avulla</em>. Em. kuvaus sisältää käsitteet <em>tili</em>, <em>omistaja</em> ja <em>henkilöturvatunnus</em>. Tämän lisäksi käsitteisiin liittyy suhteita, jotka osittain ilmenevät kuvaksesta ja osittain vaativat aihealueen ymmärrystä. Esimerkiksi tili ja omistaja ovat erillisiä käsitteitä ja niiden välinen yhteys kuvaa omistajuutta. Omistajan ja henkilöturvatunnuksen välinen yhteys on taas riippuvainen olemassaolosta -- Omistajan henkilöturvatunnusta ei ole olemassa ilman omistajaa. Omistajalla on henkilöturvatunnus.
+</p>
+
+<p>
+  Käsitteiden nimeäminen kuvaavammiksi on myös mahdollista. Edeltävässä kuvauksessa ollut käsite <em>omistaja</em> kannattaisi todennäköisesti nimetä uudelleen henkilöksi.
+</p>
+
+
+<p>
+  <strong>Rakenteellinen abstraktiotaso</strong> (logical level, structural level) on kuvaus tietokantaan tallennettavan tiedon rakenteesta. Se voi olla esimerkiksi luokkakaavio, tietokantakaavio (palaamme näihin myöhemmin kurssilla) tai SQL-kielellä tehdyt tietokantataulujen luomislauseet.
+</p>
+
+<p>
+  Edeltävän esimerkin perusteella voisi puhua kahdesta taulusta: <code>Taulu Tili</code> ja <code>Taulu Henkilo</code>. Henkilöä kuvaavaan tauluun kuuluisi myös henkilöturvatunnus, jolloin taulu merkittäisiin esimerkiksi muodossa <code>Taulu Henkilo(henkiloturvatunnus)</code>. Tämän lisäksi henkilön ja tilin suhdetta kuvattaisiin jollain tavalla -- esimerkiksi "Henkilöllä on yksi tai useampi tili".
+</p>
+
+<p>
+  <strong>Fyysinen abstraktiotaso</strong> (physical level, internal level) kuvaa konkreettista tiedon tallentamistapaa kiintolevylle. Tämä sisältää tiedon tietokantaa kuvaavan tai kuvaavien tiedostojen sijainnista, käytettävistä tietorakenteista, ymym. Fyysinen abstraktiotaso on tyypillisesti järjestelmäkohtainen ja riippuu myös ainakin osittain tallennettavan tiedon muodosta. 
+<p>
+  
+
+<h1 class="material-heading">
+    Structured Query Language (SQL)
+
+</h1>
+
+<p>
+  Materiaalin ensimmäisen osan esimerkeissä tarkasteltiin tietokoneen kiintolevyllä sijaitsevan tiedon käsittelyä ohjelmallisesti -- käytännössä esimerkki käsitteli <strong>fyysistä näkymää tiedon tallennukseen</strong>. Esimerkeissä määritettiin tiedon rakenne sekä muuttujien maksimipituus: jos muuttujan todellinen arvo ei vastaa maksimipituutta, tyhjä tila täytetään välilyönneillä. Tällä tavoin ohjelmoija voi olettaa, että tiettyyn muuttujaan liittyvä arvo alkaa aina samasta kohtaa. Laajemmin ajatellen, ohjelmoija tietää myös, että samaisen muuttujan arvo on samassa kohdassa jokaiselle tallennetulle tietueelle (tai oliolle).
+</p>
+
+<p>
+  Ensimmäisen viikon esimerkeissä tiedon käsittelijän tai tiedon hakijan tulee tuntea käsite indeksi sekä osata hyödyntää indeksiä tiedon hakemisessa. Samalla, jos tiedon hakija haluaa vaikkapa useamman muuttujan arvon, tulee ohjelmaa sekä siinä käytettyjä indeksejä päivittää sopivasti.
+</p>
+
+<p>
+  Kun tietokantoja käytetään osana jokapäiväistä työtä, edellä kuvattu tiedon käsittely ei ole kovin mielekästä. Se vaatii käytännössä ohjelmointiosaamista sekä ymmärrystä tallennetusta tiedosta ja tiedon fyysisestä esitysmuodosta. Tiedon fyysinen esitysmuoto vaihtelee tallennettavan tiedon mukaan, joten tiedon käsittelyyn tarvitaan parempi ratkaisu. Tätä ongelmaa ja työläyttä ratkaisemaan on luotu useampia korkeamman abstraktiotason esitystapoja, joita käytetään tietokannassa olevan tiedon hakemiseen ja tiedon muokkaamiseen.
+</p>
+
+<p>
+  Tällä kurssilla keskitytään Structured Query Language (<strong>SQL</strong>) -kieleen. Structured Query Language (jatkossa SQL) on 1980-luvulla standardoitu kieli tietokantakyselyiden tekemiseen. SQL-kielen avulla voidaan määritellä tallennettavan tiedon muoto, luoda ja muokata tietokantatauluja, lisätä tietoa tietokantatauluihin, muokata tietokantatauluissa olevaa tietoa sekä hakea tietoa tietokannoista. Merkittävä osa tällä hetkellä käytössä olevista tietokannanhallintajärjestelmistä mahdollistaa SQL-kielellä tehtyjen kyselyiden käyttämisen tietokannanhallintajärjestelmässä olevien tietokantojen ja tietokantataulujen käsittelyyn. Voidaan ajatella, että SQL-kielellä tehdyt kyselyt ovat kuvattu <em>käsitteellisellä abstraktiotasolla</em>, eli SQL-kieltä käytettäessä tiedon lopulliseen esitysmuotoon kiintolevyllä ei oteta kantaa.
+</p>
+
+<p>
+  Vuosien mittaan standardista on julkaistu useita versioita, joista viimeisin on vuodelta <a href="https://en.wikipedia.org/wiki/SQL:2016" target="_blank" norel>2016</a>. Tietokannanhallintajärjestelmät ja niiden eri versiot noudattavat SQL-kielen standardeja vaihtelevasti. Yhtä tietokannanhallintajärjestelmää varten luodut kyselyt eivät ole aina suoraan siirrettävissä toiseen tietokannanhallintajärjestelmään. On siis syytä huomioida että tietokannanhallintajärjestelmästä toiseen siirryttäessä joudutaan usein myös tekemään SQL-kyselyihin (pieniä) muutoksia. Tyypillisimpiä tietotyyppejä, joiden käsittelytapa vaihtelee eri tietokannanhallintajärjestelmien välillä ovat päivämäärät. 
+</p>
+
+<p>
+  Kurssin toisessa osassa tutustutaan yhden tietokantataulun käsittelyyn SQL-kielellä. Opettelemme luomaan tietokantataulun, lisäämään tietokantatauluun tietoa, hakemaan tietokantataulusta tietoa sekä päivittämään ja poistamaan tietokantataulussa olevaa tietoa.
+</p>
+
+<p>
+  Käytämme tässä osassa SQLite-nimistä tietokannanhallintajärjestelmää.
+</p>
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>SQLiten lataaminen ja käyttöönotto
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    SQLiten saa ladattua osoitteesta <a href="https://www.sqlite.org/download.html" target="_blank" norel>https://www.sqlite.org/download.html</a>. Kun olet tallentanut (ja asentanut) SQLiten, käynnistä käyttöjärjestelmässä terminaali, ja kirjoita komento <code>sqlite3 tietokanta.db</code>.
+  </p>
+  
+  <p>
+    Kyseinen komento luo tietokanta.db-nimisen tiedoston, joka sisältää käsittelemäsi tietokannan, ja avaa yhteyden kyseiseen tietokantaan.
+  </p>
+
+  <p>
+    Suorittamalla kyselyn "SELECT 1" sqlite tulostaa arvon 1.
+  </p>
+
+<pre class="sample-output">kayttaja@kone:~/kansio/$ sqlite3 tietokanta.db
+SQLite version 3.11.0 2016-02-15 17:29:24
+Enter ".help" for usage hints.
+sqlite> SELECT 1;
+1
+sqlite>
+</pre>
+
+  <p>
+    Voit käyttää kyseistä tietokantaa esimerkkien testaamiseen.
+  </p>
+  
+
+  </div>
+</div>
+
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>SQL-kyselyiden muodosta
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    SQL-kieli on "case insensitive", eli sillä, että onko kysely kirjoitettu isoilla vai pienillä kirjaimilla kei ole kyselyn suorituksen kannalta merkitystä. Voimme kirjoittaa komennon <code>SELECT</code> yhtä hyvin muodossa <code>select</code> tai <code>Select</code> -- sama pätee myös taulujen ja sarakkeiden nimille.
+  </p>
+  
+  <p>
+    Noudatamme tällä kurssilla seuraavaa käytäntöä:
+  </p>
+  
+  <ol>
+    <li>Kaikki SQL-kielen komennot, kuten <code>SELECT</code>, <code>FROM</code> ja <code>WHERE</code>, kirjoitetaan isolla.</li>
+    <li>Taulujen nimet kirjoitetaan isolla alkukirjaimella. Esimerkiksi <code>Henkilo</code> ja <code>Opiskelija</code>.</li>
+    <li>Taulujen sarakkeet eli attribuutit kirjoitetaan pienellä. Esimerkiksi <code>nimi</code> ja <code>syntymavuosi</code>.</li>
+  </ol>
+
+
+  </div>
+</div>
+
+
+
+
+<h2 class="material-heading">
+    Tietokantataulun luominen
+
+</h2>
+
+<p>
+  Tietokantataulu luodaan SQL-kielen <strong>CREATE TABLE</strong> lauseella, jota seuraa luotavan taulun nimi, ja suluissa tietokantataulun sarakkeiden tiedot pilkulla eroteltuna. 
+</p>
+
+
+<pre class="sh_java code-highlight"><code>CREATE TABLE <em>TAULUN_NIMI</em> (
+    <em>sarakkeen 1 tiedot</em>,
+    <em>sarakkeen 2 tiedot</em>,
+    <em>sarakkeen 3 tiedot</em>
+)
+</code></pre>
+
+
+
+<h3 class="material-heading">
+    Tietotyypit
+
+</h3>
+
+<p>
+  Tietokantaan säilöttävä tieto voi olla montaa eri muotoa, esimerkiksi merkkijonoja, numeroita, binäärimuodossa olevia tiedostoja sekä päivämääriä. Tietokannan suunnittelijan tehtävänä on päättää kunkin sarakkeen tiedon tyyppi.
+</p>
+
+<p>
+  Sarakkeen tiedon tyyppi määrää minkämuotoista tietoa sarakkeen arvoksi voi tallentaa. Käytännössä tietokantataulua luotaessa sarakkeen määrittelyssä annettavat tiedot kertovat tietokannanhallintajärjestelmälle siitä, että minkälaista tietoa sarakkeeseen voidaan lisätä, ja toisaalta samalla minkälaista tietoa sarakkeeseen ei voida lisätä. Sarakkeen tyyppi vaikuttaa myös asioihin, joita sarakkeen arvoilla voi tehdä -- esimerkiksi keskiarvon laskeminen merkkijonotyyppisiä arvoja sisältävästä sarakkeesta ei ole kovin järkevää.
+</p>
+
+<p>
+  Tyypillisesti käytetyn tietotyypit ovat seuraavat:
+</p>
+
+<ul>
+  <li><strong>varchar(n)</strong> korkeintaan <em>n</em> merkin pituinen merkkijono.</li>
+  <li><strong>integer</strong> kokonaisluku</li>
+  <li><strong>float</strong> liukuluku eli desimaaliluku</li>
+  <li><strong>date</strong> päivämäärä, tallentaa vuoden, kuukauden ja päivän</li>
+  <li><strong>timestamp</strong> aikaleima, tallentaa vuoden, kuukauden, päivän, tunnit, minuutit ja sekunnit -- mahdollisesti myös tarkempia arvoja</li>
+</ul>
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Lisää tietotyyppejä
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Eri tietokannanhallintajärjestelmät kuten <code>SQLite</code>, <code>MySQL</code> ja <code>PostgreSQL</code> tarjoavat hieman erilaisia tietotyyppejä ohjelmoijan käyttöön. Seuraavissa dokumenteissa kerrotaan näistä enemmän.
+  </p>
+
+  <ul>
+    <li><a href="https://www.sqlite.org/datatype3.html" target="_blank" norel>https://www.sqlite.org/datatype3.html</a></li>
+    <li><a href="http://www.postgresql.org/docs/9.4/static/datatype.html" target="_blank" norel>http://www.postgresql.org/docs/9.4/static/datatype.html</a></li>
+    <li><a href="http://www.w3schools.com/sql/sql_datatypes.asp" target="_blank" norel>http://www.w3schools.com/sql/sql_datatypes.asp</a></li>
+  </ul>
+  
+
+  </div>
+</div>
+
+
+
+<h3 class="material-heading">
+    Sarakkeen tietojen määrittely
+
+</h3>
+
+<p>
+  Jokaisesta sarakkeesta kerrotaan sarakkeen nimi, sarakkeeseen tulevan tiedon tyyppi sekä tarvittaessa tietotyypille varattavan tilan koko -- esimerkiksi merkkijonoja tallennettaessa kerrotaan tallennettavan merkkijonon maksimipituus. Jokaisella sarakkeella tulee olla nimi sekä tyyppi. Jos sarakkeen tyyppiä ei määritellä tietokantataulua luotaessa, jotkut tietokannanhallintajärjestelmät määrittelevät sen automaattisesti, toiset taas näyttävät virheilmoituksen. 
+</p>
+
+<p>
+  Sarakkeen tiedot ovat muotoa <em>sarakkeen_nimi sarakkeen_tietotyyppi</em>. Esimerkiksi syntymävuosi määritellään seuraavasti.
+</p>
+
+<pre class="sh_java code-highlight"><code>syntymavuosi integer
+</code></pre>
+
+<p>
+  Korkeintaan 200 merkkiä pitkä nimi määriteltäisiin taas seuraavasti.
+</p>
+
+<pre class="sh_java code-highlight"><code>nimi varchar(200)
+</code></pre>
+
+<p>
+  Henkilön syntymävuoden ja nimen tallentamiseen tarkoitettu taulu määriteltäisiin seuraavasti. Alla on oletettu, että nimi ei ole koskaan yli 200 merkkiä pitkä.
+</p>
+
+<pre class="sh_java code-highlight"><code>CREATE TABLE Henkilo (
+    syntymavuosi integer,
+    nimi varchar(200)
+)
+</code></pre>
+
+<p>
+  Yllä luodun esimerkkitaulun sisältö voisi olla esimerkiksi seuraavanlainen.
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>syntymävuosi</th>
+      <th>nimi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1997</td>
+      <td>Pihla</td>
+    </tr>
+    <tr>
+      <td>1993</td>
+      <td>Joni</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<h3 class="material-heading">
+    Tietokantataulun poistaminen
+
+</h3>
+
+<p>
+  Tietokantataulun poistaminen onnistuu <strong>DROP TABLE</strong> <em>TAULUN_NIMI</em> -lauseella, missä taulun nimi on poistettavan taulun nimi. Esimerkiksi edellä luodun Henkilo-taulun poistaminen onnistuisi seuraavasti.
+</p>
+
+<pre class="sh_java code-highlight"><code>DROP TABLE Henkilo
+</code></pre>
+
+<p>
+  Huomaathan, että tietokantataulun poistaminen poistaa myös kaiken tietokantataulussa olevan datan.
+</p>
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Olemassaolevien tietokantataulujen listaaminen
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Olemassaolevien tietokantataulujen listaamiseen ei ole yhtä kaikissa tietokannanhallintajärjestelmissä toimivaa tapaa. Osoitteessa <a href="http://onewebsql.com/blog/list-all-tables" target="_blank" norel>http://onewebsql.com/blog/list-all-tables</a> oleva sivu listaa muutamien tietokannanhallintajärjestelmien syntaksit tietokantataulujen listaamiseen.
+  </p>
+
+  <p>
+    SQLiten tietokantataulut saadaan selville komennolla <code>SELECT * FROM sqlite_master</code>.
+  </p>
+
+<pre class="sh_java code-highlight"><code>SELECT * FROM sqlite_master
+</code></pre>
+  
+
+  </div>
+</div>
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Sarakkeiden tietotyypin selvittäminen
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Attribuutin -- tai sarakkeen -- tietotyypin kysymiseen <a href="http://stackoverflow.com/questions/13405572/sql-statement-to-get-column-type" target="_blank">ei myöskään ole yhtä tapaa</a>, vaan tapa liittyy käytettävään tietokannanhallintajärjestelmään. Käyttämässämme SQLite-versiossa sarakkeen tyypin saa selville kyselyllä <code>PRAGMA TABLE_INFO(<em>TAULUN_NIMI</em>)</code>, missä <em>TAULUN_NIMI</em> on tarkasteltavan taulun nimi.
+  </p>
+
+  <p>
+    Esimerkiksi
+  </p>
+
+<pre class="sh_java code-highlight"><code>PRAGMA TABLE_INFO(Henkilo)
+</code></pre>
+  
+  
+
+  </div>
+</div>
+
+
+
+<h2 class="material-heading">
+    Tiedon lisääminen tietokantatauluun
+
+</h2>
+
+<p>
+  Tiedon lisääminen tietokantatauluun tapahtuu <strong>INSERT INTO</strong> -lauseella. Lausetta <code>INSERT INTO</code> seuraa kohdetaulun nimi, jonka jälkeen määritellään sarakkeet, joihin arvot asetetaan. Näitä seuraa vielä konreettiset arvot.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>INSERT INTO <em>TAULUN_NIMI</em> (<em>sarake1</em>, <em>sarake2</em>, <em>sarake3</em>)
+    VALUES (<em>'merkkijono hipsuissa'</em>,<em>'numero ei'</em>, 123)
+</code></pre>
+
+
+<p>
+  Oletetaan, että käytössämme on edellisessä aliluvussa luotu taulu Henkilo, jossa on sarakkeet syntymavuosi ja nimi. Uuden henkilon lisääminen tapahtuu seuraavasti.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
+    VALUES (1923, 'Edgar Frank Codd')
+</code></pre>
+
+<p>
+  Yllä olevassa esimerkissä tietokantatauluun Henkilo lisätään uusi rivi. Sarakkeeseen syntymävuosi tulee arvo 1923 ja sarakkeeseen nimi tulee merkkijono 'Edgar Frank Codd'.
+</p>
+
+<p>
+  Vastaavasti vuonna 1947 syntyneen Raymond Boycen lisääminen tietokantatauluun Henkilo onnistuu seuraavasti.
+</p>
+
+<pre class="sh_java code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
+    VALUES (1947, 'Raymond Boyce')
+</code></pre>
+
+
+
+<h2 class="material-heading">
+    Tiedon hakeminen tietokantataulusta
+
+</h2>
+
+<p>
+  Tiedon hakeminen tietokantataulusta onnistuu <strong>SELECT</strong>-lauseella. Avainsanaa <code>SELECT</code> seuraa haettavat sarakkeet, tietokantataulun nimi sekä mahdollisesti rajausehto tai rajausehtoja.
+</p>
+
+<p>
+  Ilman rajausehtoa kyselyn rakenne on seuraava.
+</p>
+
+<pre class="sh_java code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
+</code></pre>
+
+<p>
+  Rajausehdon kanssa kyselyn rakenne on seuraava.
+
+<pre class="sh_java code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
+    WHERE <em>rajausehto</em>
+</code></pre>
+
+
+<p>
+  Oletetaan, että käytössämme on seuraava taulu, jonka nimi on Henkilo.
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>syntymavuosi</th>
+      <th>nimi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1997</td>
+      <td>Pihla</td>
+    </tr>
+    <tr>
+      <td>1993</td>
+      <td>Joni</td>
+    </tr>
+    <tr>
+      <td>1947</td>
+      <td>Raymond</td>
+    </tr>
+    <tr>
+      <td>1923</td>
+      <td>Edgar</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p>
+  Jos haluamme listata kaikki taulun henkilöt, kysely olisi muotoa.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo
+</code></pre>
+
+<p>
+  Valinta henkilöihin, jotka ovat syntyneet ennen vuotta 1950 onnistuu seuraavasti. 
+</p>
+
+<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
+</code></pre>
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Kaikki sarakkeet
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Hakukyselyn <code>SELECT</code>-komentoa seuraava sarakelistaus voidaan korvata tähtimerkillä * jos halutaan hakea kaikki tietokantataulun sarakkeet. Olettaen, että taulussa Henkilo on vain sarakkeet syntymavuosi ja nimi, kysely:
+  </p>
+  
+<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
+</code></pre>
+
+  <p>
+    Voidaan korvata kyselyllä
+  </p>
+  
+<pre class="sh_java code-highlight"><code>SELECT * FROM Henkilo WHERE syntymavuosi &lt; 1950
+</code></pre>
+
+
+  </div>
+</div>
+
+
+
+<p>
+  Jos sarakkeen arvot ovat merkkijonoja, kuten nimi, voi hakuehdossa käyttää <code>LIKE</code>-operaatiota. Tämän avulla hakutuloksia voi rajata osittaisen merkkijonon avulla. Esimerkiksi kysely <code>SELECT * FROM Henkilo WHERE nimi LIKE '%a%'</code> hakee kaikki henkilöt, joiden nimessä esiintyy a-kirjain.
+</p>
+
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>Loogiset operaatiot
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Rajausehtoihin voi lisätä loogisia operaatioita kyselyjen tulosten rajaamiseksi. Operaatio 'ja', eli kahden rajausehdon yhdistäminen, toimii avainsanalla <code>AND</code>. Esimerkiksi kysely <code>SELECT * FROM Henkilo WHERE nimi = 'Ted' AND syntymavuosi = 1920</code> listaa vain ne henkilöt, joiden nimi on 'Ted' ja joiden syntymävuosi on 1920.
+  </p>
+  
+  <p>
+    Operaation 'tai' lisääminen on myös mahdollista. Esimerkiksi kysely <code>SELECT * FROM Henkilo WHERE nimi = 'Matti' OR nimi = 'Maija'</code> listaisi kaikki ne henkilöt, joiden nimi on Matti tai Maija.
+  </p>
+
+  
+  <p>
+    Kyselyissä toimivat myös suurempi kuin <code>&gt;</code> ja pienempi kuin <code>&lt;</code> -operaatiot.
+  </p>
+
+  
+  <p>
+    Ehtoja voi myös yhdistää, jonka lisäksi suluilla voi rajata suoritusjärjestystä. Tutki kyselyä  <code>SELECT * FROM Kurssisuoritus WHERE (kurssi = 'Ohjelmoinnin perusteet' OR kurssi = 'Ohjelmoinnin jatkokurssi') AND arvosana = 3</code> ja mieti mitä se tekee.
+  </p>
+  
+  
+
+  </div>
+</div>
+
+
+
+<h2 class="material-heading">
+    Tiedon päivittäminen
+
+</h2>
+
+
+<p>
+  Tietokantataulussa olevan tiedon päivittäminen onnistuu <strong>UPDATE</strong>-lauseella. Komentoa <cude>UPDATE</cude> seuraa tietokantataulun nimi, avainsana <code>SET</code>, jota seuraa sarakekohtaiset uudet arvot. Lopuksi kyselyyn lisätään rajausehto, jonka perusteella rajataan muutettavia rivejä.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>UPDATE <em>TAULUN_NIMI</em>
+    SET <em>sarake1='uusiarvo'</em>, <em>sarake2=1234</em>
+    WHERE <em>sarake3='rajausarvo'</em>
+</code></pre>
+
+<p>
+  Esimerkiksi 'Joni'-nimisen henkilön nimen päivittäminen muotoon 'Joni S' onnistuu seuraavasti.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>UPDATE Henkilo
+    SET nimi='Joni S'
+    WHERE nimi='Joni'
+</code></pre>
+
+
+<h2 class="material-heading">
+    Tiedon poistaminen tietokantataulusta
+
+</h2>
+
+<p>
+  Tiedon poistaminen tietokantataulusta onnistuu <strong>DELETE FROM</strong> -lauseella. Lauseeseen määritellään lisäksi tietokantataulu, mistä tietoa poistetaan, ja mahdollisesti ehtoja, jotka rajaavat poistettavia rivejä. Yksinkertaisimmillaan komennolla poistetaan kaikki rivit annetusta taulusta seuraavasti.
+</p>
+
+<pre class="sh_java code-highlight"><code>DELETE FROM <em>TAULUN_NIMI</em>
+</code></pre>
+
+<p>
+  Poistettavien rivien rajaaminen tapahtuu WHERE-ehdolla, jota seuraa poistettavien arvojen rajaus. Esimerkiksi kaikki vuonna 1920 syntyneet henkilöt poistettaisiin tietokantataulusta Henkilo seuraavalla komennolla.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1920
+</code></pre>
+
+<p>
+  Poistoehtoon voi rakentaa loogisen lauseen, joka sisältää <code>AND</code> ja <code>OR</code> -määreitä. Näiden avulla poistorajausta voi tehdä laajemmin. Alla olevassa esimerkissä poistetaan henkilö (tai henkilöt), joiden syntymävuosi on 1947 ja joiden nimi on 'Raymond Boyce'.
+</p>
+
+<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1947 AND nimi = 'Raymond Boyce'
+</code></pre>
+
+<p>
+  Pienempi kuin ja suurempi kuin -vertailuoperaatiot sekä erisuuri kuin vertailuoperaatiot ovat myös mahdollisia. Alla olevassa esimerkissä poistetaan kaikki henkilöt, joiden syntymävuosi on pienempi kuin 2000 ja joiden nimi ei ole 'Boyce-Codd'.
+</p>
+
+<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi &lt; 2000 AND nimi != 'Boyce-Codd'
+</code></pre>
+
+
+<h2 class="material-heading">
+    Yhteenveto
+
+</h2>
+
+<table class="table">
+  <tr>
+    <th>
+      Operaatio
+    </th>
+    <th>
+      Avainsana
+    </th>
+    <th>
+      Esimerkki
+    </th>
+  </tr>
+  <tr>
+    <td>
+      Tietokantataulun luominen
+    </td>
+    <td>
+      CREATE
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>CREATE TABLE Opiskelija (
+    opiskelijanumero integer,
+    nimi varchar(60),
+    sahkopostiosoite varchar(40)
+)
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Tietokantataulun poistaminen
+    </td>
+    <td>
+      DROP
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>DROP TABLE Opiskelija
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Tiedon lisääminen
+    </td>
+    <td>
+      INSERT
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>INSERT INTO
+    Opiskelija (opiskelijanumero, nimi, sahkopostiosoite)
+    VALUES (1008286, 'Ari', 'posti@osoite.net');
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Tiedon hakeminen
+    </td>
+    <td>
+      SELECT
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>SELECT nimi FROM Opiskelija
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Tiedon päivittäminen
+    </td>
+    <td>
+      UPDATE
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>UPDATE Opiskelija
+    SET nimi='Ari V'
+    WHERE opiskelijanumero=1008286
+</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Tiedon (rivien) poistaminen
+    </td>
+    <td>
+      DELETE
+    </td>
+    <td>
+<pre class="sh_java code-highlight"><code>DELETE FROM Opiskelija
+    WHERE opiskelijanumero=1008286
+</code></pre>
+    </td>
+  </tr>
+  
+</table>
+
+
+
+<div class="exercise">
+  <div class="exercise__header">
+    <a data-toggle="collapse" class="exercise__toggle">
+      <i class="fa fa-pencil exercise__icon"></i>
+      <h1 class="exercise__heading">Kappaleet</h1>
+
+      <i class="fa fa-caret-down exercise__arrow"></i>
+    </a>
+  </div>
+
+  <div class="collapse">
+    <div class="exercise__body">
+      
+  <p>
+    Huom! <em>Suurin osa tästä tehtävästä tulee tehdä SQLite-ohjelmalla.</em> Materiaalista löytyy aiemmin ohjeet kyseisen ohjelman asentamiseen.
+  </p>
+
+  <p>
+    Etsi tehtäväpohjan sisältävä kansio ja mene sen alikansioon <code>db</code>. Kyseisessä kansiossa on valmiina tiedosto <code>esimerkki.db</code>.
+  </p>
+
+  <p>
+    Luo kansioon <code>db</code> tietokanta <code>levy.db</code>. Avaa tietokanta sqliten avulla, ja luo tietokantaan tietokantataulu nimeltä <code>Kappale</code>, joka sisältää seuraavat sarakkeet:
+  </p>
+
+  <ul>
+    <li>nimi (merkkijono, maksimipituus 100 merkkiä)</li>
+    <li>artisti (merkkijono, maksimipituus 80 merkkiä)</li>
+    <li>levytysvuosi (kokonaisluku)</li>
+    <li>pituus (kokonaisluku)</li>
+  </ul>
+
+  <p>
+    Lisää tämän jälkeen tietokantatauluun <code>Kappale</code> seuraavat kappaleet.
+  </p>
+
+  <table class="table">
+    <tr>
+      <th>Nimi</th>
+      <th>Artisti</th>
+      <th>Levytysvuosi</th>
+      <th>Pituus</th>
+    </tr>
+    <tr>
+      <td>Capito Tutto</td>
+      <td>Kummeli</td>
+      <td>1994</td>
+      <td>124</td>
+    </tr>
+    <tr>
+      <td>Kanada</td>
+      <td>Kummeli</td>
+      <td>1994</td>
+      <td>119</td>
+    </tr>
+    <tr>
+      <td>Tango Vibrato</td>
+      <td>Kummeli</td>
+      <td>1994</td>
+      <td>117</td>
+    </tr>
+  </table>
+
+
+    </div>
+  </div>
+</div>
+
+<div class="exercise">
+  <div class="exercise__header">
+    <a data-toggle="collapse" class="exercise__toggle">
+      <i class="fa fa-pencil exercise__icon"></i>
+      <h1 class="exercise__heading">Tilastot</h1>
+
+      <i class="fa fa-caret-down exercise__arrow"></i>
+    </a>
+  </div>
+
+  <div class="collapse">
+    <div class="exercise__body">
+      
+
+  <p>
+    Huom! <em>Suurin osa tästä tehtävästä tulee tehdä SQLite-ohjelmalla.</em> Materiaalista löytyy aiemmin ohjeet kyseisen ohjelman asentamiseen.
+  </p>
+
+  <p>
+    Etsi tehtäväpohjan sisältävä kansio ja mene sen alikansioon <code>db</code>. Kyseisessä kansiossa on valmiina tiedosto <code>palkkatilastot.db</code>. Kyseisessä tiedostossa on yksityisen sektorin mediaanipalkat. Palkkatilastot on noudettu tilastokeskuksen sivuilta osoitteesta <a href="http://www.stat.fi/til/yskp/2014/yskp_2014_2015-08-20_tie_001_fi.html" target="_blank" norel">http://www.stat.fi/til/yskp/2014/yskp_2014_2015-08-20_tie_001_fi.html</a>.
+  </p>
+
+  <p>
+    Selvitä tiedostosta seuraavat tiedot:
+  </p>
+
+  <ul>
+    <li>Mikä on ohutlevyseppien kuukausittainen mediaaniansio?</li>
+    <li>Kuinka monen työtehtävän mediaaniansio on alle 1900 euroa kuussa?</li>
+    <li>Kuinka monen työtehtävän mediaaniansio on yli 7000 euroa kuussa?</li>
+    <li>Minkä työtehtävän mediaaniansio on tasan 3300 euroa kuussa?</li>
+  </ul>
+
+  <p>
+    TMC:n tehtäväpohjassa on valmiit kohdat vastauksille. Kun tiedoston Tilastoja.java käynnistää nyt, ohjelma tulostaa.
+  </p>
+
+<pre class="sample-output">Ohutlevyseppien mediaaniansio: 0
+Työtehtäviä, joiden mediaaniansio on alle 1900 euroa: 0
+Työtehtäviä, joiden mediaaniansio on yli 7000 euroa: 0
+Työtehtävä, jonka mediaaniansio on tasan 3300 euroa kuussa: ???
+</pre>
+
+  <p>
+    Kun olet selvittänyt tilastot, muokkaa ohjelmaa niin, että ohjelma tulostaa edellä toivotut lukumäärät (ja työtehtävän) oikein.
+  </p>
+
+  <p>
+    <em>
+      Tehtäväpohjassa on myös tiedosto <em>palkkatilastot_varalla.db</em> siltä varalta, että muokkaat vahingossa käsiteltävää tietokantatiedostoa.
+    </em>
+  </p>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+<h1 class="material-heading">
+    Tietokannan käsittely ohjelmallisesti
+
+</h1>
+
+<p>
+  Lähes jokainen ohjelmointikieli tarjoaa jonkinlaisen rajapinnan tietokantakyselyiden tekemiseen. Nämä rajapinnat suoraviivaistavat kyselyiden tekemistä tietokantoihin ja tietokannanhallintajärjestelmien käyttöönoottoa, sillä rajapintaa noudattamalla yhteydenotto tietokannantallintajärjestelmään on lähes samankaltaista käytetystä tietokannanhallintajärjestelmästä riippumatta.
+</p>
+
+<p>
+  Java-kielessä tähän tehtävään on <a href="https://en.wikipedia.org/wiki/Java_Database_Connectivity" target="_blank" nodel>Java Database Connectivity</a> (JDBC) -rajapinta. JDBC tarjoaa tuen tietokantayhteyden luomiseen sekä kyselyiden suorittamiseen tietokantayhteyden yli. Jotta JDBCn avulla voidaan ottaa yhteys tietokantaan, tulee käytössä olla tietokannanhallintajärjestelmäkohtainen ajuri, jonka vastuulla on tietokantayhteyden luomiseen liittyvät yksityiskohdat sekä tietokannanhallintajärjestelmän sisäisten kyselytulosten muuntaminen JDBC-rajapinnan mukaiseen muotoon.
+</p>
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>JDBC-ajurin noutaminen
+  </div>
+
+  <div class="hint__body">
+      
+  <p>
+    JDBC-ajurit ovat käytännössä Java-kielellä kirjoitettuja ohjelmia, joita tietokannanhallintajärjestelmän toteuttajat tarjoavat ohjelmoijien käyttöön. Kurssin toisessa osassa ajurit on lisätty valmiiksi tehtäväpohjien <code>lib</code>-kansioon, jonka lisäksi niiden käyttö on valmiiksi määritelty tehtäväpohjissa.
+  </p>
+
+  <p>
+    Myöhemmissä osissa tutustumme kirjastojen käyttöönottoon ja hakemiseen <a href="https://maven.apache.org/" target="_blank" norel">Maven</a>-apuvälineen avulla.
+  </p>
+  
+
+  </div>
+</div>
+
+
+
+<h2 class="material-heading">
+    Ohjelmallinen tietokantakysely kokonaisuudessaan 
+
+</h2>
+
+
+<p>
+  Oletetaan, että käytössämme on seuraava tietokantataulu Opiskelija:
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>opiskelijanumero (integer)</th>
+      <th>nimi (varchar)</th>
+      <th>syntymävuosi (integer)</th>
+      <th>pääaine (varchar)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>9999999</td>
+      <td>Pihla</td>
+      <td>1997</td>
+      <td>Tietojenkäsittelytiede</td>
+    </tr>
+    <tr>
+      <td>9999998</td>
+      <td>Joni</td>
+      <td>1993</td>
+      <td>Tietojenkäsittelytiede</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p>
+  JDBCn avulla kyselyn tekeminen tietokantatauluun tapahtuu seuraavasti -- olettaen, että käytössämme on sekä tietokanta, että tietokannan ajuri.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // luodaan yhteys jdbc:n yli sqlite-tietokantaan nimeltä "tietokanta.db"
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:tietokanta.db");
+
+        // luodaan kyely "SELECT * FROM Opiskelija", jolla haetaan
+        // kaikki tiedot Opiskelija-taulusta
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM Opiskelija");
+
+        // suoritetaan kysely -- tuloksena resultSet-olio
+        ResultSet resultSet = statement.executeQuery();
+
+        // käydään tuloksena saadussa oliossa olevat rivit läpi -- next-komento hakee
+        // aina seuraavan rivin, ja palauttaa true jos rivi löytyi
+        while(resultSet.next()) {
+            // haetaan nykyiseltä riviltä opiskelijanumero int-muodossa
+            Integer opNro = resultSet.getInt("opiskelijanumero");
+            // haetaan nykyiseltä riviltä nimi String-muodossa
+            String nimi = resultSet.getString("nimi");
+            // haetaan nykyiseltä riviltä syntymävuosi int-muodossa
+            Integer syntVuosi = resultSet.getInt("syntymävuosi");
+            // haetaan nykyiseltä riviltä pääaine String-muodossa
+            String paaAine = resultSet.getString("pääaine");
+
+            // tulostetaan tiedot
+            System.out.println(opNro + "\t" + nimi + "\t" + syntVuosi + "\t" + paaAine);
+        }
+
+        // suljetaan lopulta yhteys tietokantaan
+        connection.close();
+    }
+}
+</code></pre>
+
+<p>
+Ohjelman suoritus tuottaa (esimerkiksi) seuraavanlaisen tulostuksen:
+</p>
+
+<pre class="sample-output">999999	Pihla	1997	Tietojenkäsittelytiede
+999998	Joni	1993	Tietojenkäsittelytiede
+999997	Anna	1991	Matematiikka
+999996	Krista	1990	Tietojenkäsittelytiede
+...
+</pre>
+
+
+<h2 class="material-heading">
+    Ohjelman rakentaminen osissa 
+
+</h2>
+
+<p>
+  <em>Tässä oletetaan, että projektiin on lisätty tarvittava JDBC-ajuri.</em>
+</p>
+
+<p>
+  Avaa projektiin liittyvä <em>Source Packages</em> ja valitse (tai tarvittaessa luo) sopiva pakkaus. Oletetaan tässä, että käytössä on pakkaus <code>tikape</code>. Valitse tämän jälkeen <em>New</em> -> <em>Java Class</em>, jonka jälkeen avautuu valikko, missä voit antaa luokalle nimen. Anna luokan nimeksi <code>Main</code>.
+</p>
+
+<p>
+  Avaa tiedosto tuplaklikkaamalla sitä. Muokkaa tiedostoa vielä siten, että se on seuraavan näköinen:
+</p>
+
+<pre class="sh_java code-highlight"><code>package tikape;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+    }
+}
+</code></pre>
+
+
+
+<h3 class="material-heading">
+    Tietokantayhteyden luominen
+
+</h3>
+
+<p>
+  Lisää projektiin <em>import</em>-komento <code>import java.sql.*;</code>, joka hakee kaikki SQL-kyselyihin liittyvät Javan kirjastot.
+</p>
+
+<pre class="sh_java code-highlight"><code>package tikape;
+
+import java.sql.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+    }
+}
+</code></pre>
+
+<p>
+  Avataan seuraavaksi tietokantayhteys tietokantatiedostoon nimeltä <em>testi.db</em> ja tehdään kysely "SELECT 1", jolla pyydetään tietokantaa palauttamaan luku 1 -- käytämme tätä yhteyden testaamiseksi. Jos yhteyden luominen onnistuu, tulostetaan "Hei tietokantamaailma!", muulloin "Yhteyden muodostaminen epäonnistui".
+</p>
+
+<pre class="sh_java code-highlight"><code>package tikape;
+
+import java.sql.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:testi.db");
+
+        PreparedStatement statement = connection.prepareStatement("SELECT 1");
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if(resultSet.next()) {
+            System.out.println("Hei tietokantamaailma!");
+        } else {
+            System.out.println("Yhteyden muodostaminen epäonnistui.");
+        }
+    }
+}
+</code></pre>
+
+<pre class="sample-output">Hei tietokantamaailma!
+</pre>
+
+<p>
+  Kun suoritamme ohjelman ensimmäistä kertaa valitsemalla <em>Run</em> -> <em>Run Project</em>, puuttuvan tietokannan paikalle luodaan tietokanta (ainakin SQLiteä käyttäessä). Projektin kansiossa on nyt tiedosto <code>testi.db</code>, joka on tietokantamme.
+</p>
+
+
+<figure>
+  <img src="img/viikko3/nb-testidb.png" alt="Kun ohjelma on suoritettu ensimmäistä kertaa, tiedosto testi.db luodaan projektiin."/>
+  <figcaption>Tietokantatiedosto <em>testi.db</em> löytyy projektin kansiosta. Tiedostot löytyvät <em>Files</em>-välilehdeltä.</figcaption>
+</figure>
+
+
+
+<h3 class="material-heading">
+    Tietokantakyselyiden tekeminen
+
+</h3>
+
+<p>
+  Osoitteessa <a href="dbs/vuokraamo.db">vuokraamo.db</a> löytyy kuvitteellisen moottoripyörävuokraamon tietokanta. Lataa se edellä tehdyn projektin juureen ja kokeile kyselyn tekemistä kyseiseen tietokantaan.
+</p>
+
+<p>
+  Tietokannassa on tietokantataulu <code>Pyora</code>, jolla on sarakkeet <code>rekisterinumero</code> ja <code>merkki</code>. Jokaisen pyörän rekisterinumeron ja merkin tulostaminen tapahtuu seuraavasti -- huomaa myös, että olemme vaihtaneet käytössä olevaa tietokantaa.
+</p>
+
+<pre class="sh_java code-highlight"><code>Connection connection = DriverManager.getConnection("jdbc:sqlite:vuokraamo.db");
+
+PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Pyora");
+ResultSet rs = stmt.executeQuery();
+
+while (rs.next()) {
+    String rekisterinumero = rs.getString("rekisterinumero");
+    String merkki = rs.getString("merkki");
+
+    System.out.println(rekisterinumero + " " + merkki);
+}
+
+stmt.close();
+rs.close();
+
+connection.close();
+</code></pre>
+
+<p>
+Käydään ylläoleva ohjelmakoodi läpi askeleittain.
+</p>
+
+<ol>
+  <li>
+    <p>Luomme ensin JDBC-yhteyden tietokantaan <em>vuokraamo.db</em>.
+<pre class="sh_java code-highlight"><code>Connection connection = DriverManager.getConnection("jdbc:sqlite:vuokraamo.db");
+</code></pre>
+    </p>
+  </li>
+  
+  <li>
+    <p>Kysely luodaan antamalla yhteydelle merkkijono, jossa on kysely. Yhteys palauttaa <em>PreparedStatement</em>-olion, jota käytetään kyselyn suorittamiseen ja tulosten pyytämiseen. Metodi <em>executeQuery</em> suorittaa SQL-kyselyn ja palauttaa tulokset sisältävän <em>ResultSet</em>-olion.
+      
+<pre class="sh_java code-highlight"><code>PreparedStatement statement = connection.prepareStatement("SELECT * FROM Pyora");
+ResultSet resultSet = statement.executeQuery();
+</code></pre>
+    </p>
+  </li>
+  
+  <li>
+    <p>Tämän jälkeen ResultSet-oliossa olevat tulokset käydään läpi. Metodia next() kutsumalla siirrytään kyselyn palauttamissa tulosriveissä eteenpäin. Kultakin riviltä voi kysyä sarakeotsikon perusteella solun arvoa. Esimerkiksi kutsu getString("rekisterinumero") palauttaa kyseisellä rivillä olevan sarakkeen "rekisterinumero" arvon String-tyyppisenä.
+
+<pre class="sh_java code-highlight"><code>while(resultSet.next()) {
+    String rekisterinumero = rs.getString("rekisterinumero");
+    String merkki = rs.getString("merkki");
+
+    System.out.println(rekisterinumero + " " + merkki);
+}
+</code></pre>
+    </p>
+  </li>
+  
+  <li>
+    <p>Kun kyselyn vastauksena saadut rivit on käyty läpi, eikä niitä enää tarvita, vapautetaan niihin liittyvät resurssit.
+    
+<pre class="sh_java code-highlight"><code>stmt.close();
+rs.close();
+</code></pre>
+    </p>
+  </li>
+
+
+  <li>
+    <p>Lopulta tietokantayhteys suljetaan.
+
+<pre class="sh_java code-highlight"><code>connection.close();
+</code></pre>
+    </p>
+  </li>
+</ol>
+
+
+
+<h3 class="material-heading">
+    Parametrien lisääminen kyselyyn
+
+</h3>
+
+<p>
+  Kyselyihin halutaan usein antaa rajausehtoja. Ohjelmallisesti tämä tapahtuu lisäämällä kyselyä muodostaessa rajausehtoihin kohtia, joihin asetetaan arvot. Alla olevassa esimerkissä kyselyyn lisätään merkkijono.
+</p>
+
+<pre class="sh_java code-highlight"><code>PreparedStatement statement = connection.prepareStatement("SELECT * FROM Pyora WHERE merkki = '?'");
+statement.setString(1, "Royal Enfield");
+
+ResultSet resultSet = statement.executeQuery();
+</code></pre>
+
+<p>
+  Kyselyiden paikat indeksoidaan kohdasta 1 alkaen. Jos arvo on merkkijono, tulee kysymysmerkki lisätä hipujen sisään. Numeerisilla arvoilla hipsuja taas ei tarvita. Alla olevassa esimerkissä haetaan Henkilo-taulusta henkilöitä, joiden syntymävuosi on 1952.
+</p>
+
+<pre class="sh_java code-highlight"><code>PreparedStatement statement = connection.prepareStatement("SELECT * FROM Henkilo WHERE syntymavuosi  = ?");
+statement.setInt(1, 1952);
+
+ResultSet resultSet = statement.executeQuery();
+</code></pre>
+
+<p>
+  Ohjelma voi toimia myös siten, että rajausehdot kysytään ohjelman käyttäjältä.
+</p>
+
+
+<pre class="sh_java code-highlight"><code>Scanner lukija = new Scanner(System.in);
+System.out.println("Minkä vuoden opiskelijat tulostetaan?");
+int vuosi = Integer.parseInt(lukija.nextLine());
+
+// ...
+
+PreparedStatement statement = connection.prepareStatement("SELECT * FROM Henkilo WHERE syntymavuosi  = ?");
+statement.setInt(1, vuosi);
+
+ResultSet resultSet = statement.executeQuery();
+
+// ...
+</code></pre>
+
+
+<div class="hint">
+  <div class="hint__header">
+    <i class="fa fa-info-circle hint__icon"></i>PreparedStatement ja set<em>Arvo</em>-metodit
+  </div>
+
+  <div class="hint__body">
+    
+  <p>
+    Kun kyselyt luodaan tietokantayhteyteen liittyvän olion prepareStatement oliolla, kyselyihin merkitään kysymysmerkeillä ne kohdat, joihin käyttäjän syöttämiä arvoja voidaan lisätä. Kun metodilla setArvo -- esim setInt -- asetetaan parametrin arvo kyselyyn, Java tarkastaa (1) että arvo on varmasti halutun kaltainen ja (2) että arvossa ei ole esimerkiksi hipsuja, joiden kautta parametri voisi vaikuttaa kyselyn tavoitteisiin.
+  </p>
+
+  <p>
+    Palaamme tähän kohta kun SQL-injektioihin liittyvässä aliluvussa.
+  </p>
+  
+
+  </div>
+</div>
+
+
+
+
+<h3 class="material-heading">
+    Päivityskyselyiden tekeminen
+
+</h3>
+ 
+<p>
+  Myös päivityskyselyiden kuten rivien lisäämisten ja rivien poistamisten tekeminen onnistuu ohjelmallisesti. Tällöin tuloksessa ei ole erillistä ResultSet-oliota, vaan luku, joka kertoo muuttuneiden rivien määrän. Allaoleva ohjelmakoodi lisää pyöriä sisältävään tietokantaan uuden pyörän.
+</p>
+
+<pre class="sh_java code-highlight"><code>Connection connection = DriverManager.getConnection("jdbc:sqlite:vuokraamo.db");
+
+PreparedStatement stmt = connection.prepareStatement("INSERT INTO Pyora (rekisterinumero, merkki) VALUES ('?', '?')");
+stmt.setString(1, "RIP-34");
+stmt.setString(2, "Jopo");
+
+int changes = stmt.executeUpdate();
+
+System.out.println("Kyselyn vaikuttamia rivejä: " + changes);
+stmt.close();
+
+connection.close();
+</code></pre>
+
+
+
+<h3 class="material-heading">
+    SQL-injektiot
+
+</h3>
+
+<p>
+  Suurin osa olemassaolevista sovelluksista käyttää tietokannanhallintajärjestelmiä jollain tavalla: tietoa haetaan tietokannasta, tietokannassa olevaa tietoa muokataan, ja tietokantaan tallennetaan tietoa. Tyypillisesti sovelluksiin on myös käyttöliittymä, minkä kautta sovelluksen käyttäjät pääsevät vaikuttamaan kyselyiden sisältöön.
+</p>
+
+<p>
+  SQL-injektioiden tekeminen onnistuu jos ohjelmoija jättää tietokantaa käsitteleviin kyselyihin ns. käyttäjän mentävän aukon. Tämä onnistuu Javalla siten, että kyselyt luodaan niin, että kyselyihin lisättävät parametrit syötetään kyselyyn suoraan merkkijonona.
+</p>
+
+<p>
+  Alla on esimerkki, missä käyttäjältä kysytään haettavan pyörän merkkiä.
+</p>
+
+<pre class="sh_java code-highlight"><code>Scanner lukija = new Scanner(System.in);
+System.out.println("Minkä merkkiset pyörät tulostetaan?");
+String merkki = lukija.nextLine();
+
+// ...
+
+PreparedStatement statement = connection.prepareStatement("SELECT * FROM Pyora WHERE merkki = '?'");
+statement.setString(1, merkki);
+
+// ...
+
+ResultSet resultSet = statement.executeQuery();
+</code></pre>
+
+<p>
+  Kysely on turvallinen, sillä merkki asetetaan metodin setString avulla. Metodi tarkastaa myös, ettei kyselyssä ole ylimääräistä sisältöä. 
+</p>
+
+<p>
+  Kyselystä saa helposti erittäin turvattoman. Seuraavassa esimerkissä on mahdollisuus SQL-injektioon.
+</p>
+
+<pre class="sh_java code-highlight"><code>Scanner lukija = new Scanner(System.in);
+System.out.println("Minkä merkkiset pyörät tulostetaan?");
+String merkki = lukija.nextLine();
+
+// ...
+
+PreparedStatement statement = connection.prepareStatement("SELECT * FROM Pyora WHERE merkki = '" + merkki + "'");
+
+// ...
+
+ResultSet resultSet = statement.executeQuery();
+</code></pre>
+
+<p>
+  Kun käyttäjän syöttämä merkkijono lisätään suoraan osaksi kyselyä, voi käyttäjä syöttää SQL-lauseita komentoonsa. Jos käyttäjä syöttää ohjelmaan esimerkiksi merkkijono <code>a' OR 1=1</code>, on suoritettava SQL-lause lopulta muotoa:
+</p>
+
+<pre class="sh_java code-highlight"><code>SELECT * FROM Pyora WHERE merkki = 'a' OR 1=1
+</code></pre>
+
+<p>
+  Edellinen lause on aina totta, sillä tarkastus 1=1 on aina totta.
+</p>
+
+<p>
+  Myös muunlaisten SQL-lauseiden suoritus olisi em. tapauksessa mahdollista. Web-sarjakuva <a href="http://xkcd.com/" target="_blank">xkcd</a> kuvastaa tätä ilmiötä hyvin <em>Exploits of a Mom</em>-sarjakuvallaan.
+</p>
+
+<figure>
+  
+  <img src="http://imgs.xkcd.com/comics/exploits_of_a_mom.png" alt="School: Hi, this is your son's school. We're having some computer trouble.
+								    
+									Mom: Oh, dear -- Did he break something?
+								    
+								    School: In a way. Did you really name your son Robert'); DROP TABLE Students;--?
+								    
+								    Mom: Oh. Yes. Little Bobby Tables we call him.
+								    
+								    School: Well, we've lost this year's student records. I hope you're happy.
+								    
+								    Mom: And I hope you've learned to sanitize your database inputs."/>
+  
+  <figcaption>http://xkcd.com/327/ -- Exploits of a Mom. </figcaption>
+  
+</figure>
+
+
+
+
+
+<div class="exercise">
+  <div class="exercise__header">
+    <a data-toggle="collapse" class="exercise__toggle">
+      <i class="fa fa-pencil exercise__icon"></i>
+      <h1 class="exercise__heading">Listaaminen ja lisääminen</h1>
+
+      <i class="fa fa-caret-down exercise__arrow"></i>
+    </a>
+  </div>
+
+  <div class="collapse">
+    <div class="exercise__body">
+      
+  <p>
+    Luo tekstikäyttöliittymää käyttävä interaktiivinen sovellus, jossa voi listata ja lisätä kappaleita. Käytä tässä ensimmäisessä tehtävässä luomaasi tietokantaa (tai ainakin sen rakennetta). Ohjelman tulee käynnistyä kun luokassa ListaaminenJaLisaaminen oleva main-metodi suoritetaan. Ohjelman toiminnan tulee olla seuraavanlainen. Alla punaisella merkityt rivit ovat käyttäjän syöttämiä.
+  </p>
+
+  
+<pre class="sample-output">Tervetuloa!
+Komennot:
+1: Listaa kappaleet
+2: Lisää kappale
+3: Sulje
+    
+&gt; <font color="red">1</font>
+
+(ei kappaleita)
+
+&gt; <font color="red">2</font>
+Nimi: The Days you Didn't Notice
+Artisti: Rendezvous Park
+Levytysvuosi: 2010
+Pituus: 605
+
+&gt; <font color="red">2</font>
+Nimi: Closer To Being Here - Reprise
+Artisti: Rendezvous Park
+Levytysvuosi: 2012
+Pituus: 363
+
+&gt; <font color="red">1</font>
+Rendezvous Park, Closer to Being Here - Reprise (363 s), 2012
+Rendezvous Park, The Days you DIdn't Notice (605 s), 2010
+
+&gt; <font color="red">3</font>
+</pre>
+
+  <p>
+    Sovelluksen tulee käyttää tietokantaa tietojen tallentamiseen ja hakemiseen. Huomaa, että sovelluksen toiminnan tulee jatkua siitä mihin se jäi. Seuraavalla käynnistyskerralla edellisellä kerralla lisättyjen kappaleiden tulee siis olla olemassa tietokannassa.
+  </p>
+
+<pre class="sample-output">Tervetuloa!
+Komennot:
+1: Listaa kappaleet
+2: Lisää kappale
+3: Sulje
+    
+&gt; <font color="red">1</font>
+Rendezvous Park, Closer to Being Here - Reprise (363 s), 2012
+Rendezvous Park, The Days you DIdn't Notice (605 s), 2010
+
+&gt; <font color="red">3</font>
+</pre>
+
+  <p>
+    <em>
+      Sovelluksessa ei saa olla mahdollisuutta SQL-injektion tekemiseen.
+    </em>
+  </p>
+  
+
+    </div>
+  </div>
+</div>
+
+
+<div class="exercise">
+  <div class="exercise__header">
+    <a data-toggle="collapse" class="exercise__toggle">
+      <i class="fa fa-pencil exercise__icon"></i>
+      <h1 class="exercise__heading">Injektio</h1>
+
+      <i class="fa fa-caret-down exercise__arrow"></i>
+    </a>
+  </div>
+
+  <div class="collapse">
+    <div class="exercise__body">
+      
+  <p>
+    Toteuta sama sovellus kuin edellä, mutta lisää sovellukseen SQL-injektiomahdollisuus. Käyttäjän tulee siis pystyä kirjoittamaan syötteenä -- ainakin jossain kohtaa sovellusta -- SQL-koodia, joka suoritetaan tietokannassa.
+  </p>
+
+
+
+    </div>
+  </div>
+</div>
+
+
+<div class="quiznator-plugin" data-quiz-id="59b52f79bd99d10004d5b26c"></div>
+
+
+        </div>
+      </div>
+
+      <div class="footer-wrapper">
+        <footer class="footer">
+  <div>
+    Tämä materiaali on lisensoitu Creative Commons BY-NC-SA-lisenssillä
+    <a href="https://github.com/materiaalit/ohjelmointi-s17" class="footer__github-link" target="_blank">
+      <i class="fa fa-github"></i>
+    </a>
+  </div>
+  <div class="improvement">
+    <a href="https://github.com/materiaalit/tikape-s17/issues/new"  target="_blank" rel="noopener">
+  <button class='btn btn-primary'>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Ilmoita virhe
+  </button>
+</a>
+<a href="https://github.com/materiaalit/tikape-s17/edit/master/source/part2.html.erb" target="_blank" rel="noopener">
+  <button class='btn btn-primary'>
+    <i class="fa fa-pencil" aria-hidden="true"></i>
+ Muokkaa sivua
+  </button>
+</a>
+
+  </div>
+</footer>
+
+      </div>
+    </div>
+
+    <div class="modal fade" id="tmc-login-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="tmc-login-form">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Kirjaudu TMC-käyttäjällesi</h4>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info">
+            Puuttuuko sinulta TMC-käyttäjätunnus? <a href="https://tmc.mooc.fi/user/new" class="alert-link" target="_blank">Rekisteröidy</a>
+          </div>
+
+          <div class="alert alert-danger" id="tmc-login-error" style="display: none;"></div>
+
+          <div class="form-group">
+            <label>Käyttäjätunnus</label>
+            <input type="text" id="tmc-login-username" class="form-control" placeholder="Käyttäjätunnus"/>
+          </div>
+
+          <div class="form-group">
+            <label>Salasana</label>
+            <input type="password" id="tmc-login-password" class="form-control" placeholder="Salasana"/>
+          </div>
+
+          <div class="form-group">
+            <label>Kurssi</label>
+
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="tmcLoginCourse" value="hy-tikape-s17">
+                hy-tikape-s17 (Tietokantojen perusteet, syksy 2017)
+              </label>
+            </div>
+
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="tmcLoginCourse" value="hy-tikape-s17-avoin">
+                hy-tikape-s17-avoin (Tietokantojen perusteet, syksy 2017, Avoin yliopisto)
+              </label>
+            </div>
+
+            <small class="form-text text-muted">
+              Kurssin valinnalla on pieniä vaikutuksia materiaalin tiettyihin osiin.
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-secondary" data-dismiss="modal">Sulje</a>
+          <button type="submit" class="btn btn-primary">Kirjaudu sisään</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+    <div class="table-of-contents-layer" id="table-of-contents-layer">
+</div>
+
+<div class="table-of-contents" id="table-of-contents">
+  <h1 class="table-of-contents__heading">
+    Sisällysluettelo
+  </h1>
+
+  <div class="table-of-contents__content">
+    <ul id="table-of-contents-list"></ul>
+  </div>
+</div>
+
+
+    <script>
+  window._QUIZNATOR_ENABLED = true;
+</script>
+
+<script src="https://quiznator.herokuapp.com/javascripts/plugin-loader.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+	    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	    crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script>
+      window.SD_SHOW_SURVEY = ['part6', 'part7'].indexOf(window.location.pathname.replace(/\//g,'')) >= 0;
+    </script>
+
+    <script src="../javascripts/scripts-dd2e490a.js"></script>
+
+    <script src="https://use.fontawesome.com/ed2f73836b.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.1/cookieconsent.min.js"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js'></script>
+
+    <script>window.cookieconsent.initialise({"palette":{"popup":{"background":"#000"},"button":{"background":"#f1d600"}}});</script>
+
+  </body>
+</html>
