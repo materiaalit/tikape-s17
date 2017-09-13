@@ -1232,7 +1232,7 @@ ResultSet resultSet = statement.executeQuery();
 </code></pre>
 
 <p>
-  Kyselyiden paikat indeksoidaan kohdasta 1 alkaen. Jos arvo on merkkijono, tulee kysymysmerkki lisätä hipsujen sisään. Numeerisilla arvoilla hipsuja taas ei tarvita. Alla olevassa esimerkissä haetaan Henkilo-taulusta henkilöitä, joiden syntymävuosi on 1952.
+  Kyselyiden paikat indeksoidaan kohdasta 1 alkaen. Alla olevassa esimerkissä haetaan Henkilo-taulusta henkilöitä, joiden syntymävuosi on 1952.
 </p>
 
 <pre class="sh_java code-highlight"><code>PreparedStatement statement = connection.prepareStatement("SELECT * FROM Henkilo WHERE syntymavuosi  = ?");
@@ -1273,7 +1273,7 @@ ResultSet resultSet = statement.executeQuery();
   </p>
 
   <p>
-    Palaamme tähän kohta kun SQL-injektioihin liittyvässä aliluvussa.
+    Palaamme tähän kohta SQL-injektioihin liittyvässä aliluvussa.
   </p>
   
 
