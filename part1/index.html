@@ -530,7 +530,7 @@ tiedosto.write(opiskelijanumero.getBytes());
 </p>
 
 <pre class="sh_java code-highlight"><code>// Avataan tiedosto 'opiskelija.data' lukemista ja kirjoittamista varten
-RandomAccessFile tiedosto = new RandomAccessFile("opiskelija.data", "r");
+RandomAccessFile tiedosto = new RandomAccessFile("opiskelija.data", "rwd");
 
 // Oletetaan, että haemme opiskelijanumeroa "0123456789"
 String haettava = "0123456789";
@@ -568,7 +568,7 @@ for (int indeksi = 0; indeksi &lt; tiedosto.length(); indeksi += 50) {
 </p>
 
 <pre class="sh_java code-highlight"><code>// Avataan tiedosto 'opiskelija.data' lukemista ja kirjoittamista varten
-RandomAccessFile tiedosto = new RandomAccessFile("opiskelija.data", "r");
+RandomAccessFile tiedosto = new RandomAccessFile("opiskelija.data", "rwd");
 
 // Oletetaan, että käytössä on hajautustaulukko, jossa
 // on tieto opiskelijanumerosta tiedoston indeksiin
