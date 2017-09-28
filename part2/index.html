@@ -262,7 +262,7 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>CREATE TABLE <em>TAULUN_NIMI</em> (
+<pre class="sh_sql code-highlight"><code>CREATE TABLE <em>TAULUN_NIMI</em> (
     <em>sarakkeen 1 tiedot</em>,
     <em>sarakkeen 2 tiedot</em>,
     <em>sarakkeen 3 tiedot</em>
@@ -332,21 +332,21 @@ sqlite>
   Sarakkeen tiedot ovat muotoa <em>sarakkeen_nimi sarakkeen_tietotyyppi</em>. Esimerkiksi syntymävuosi määritellään seuraavasti.
 </p>
 
-<pre class="sh_java code-highlight"><code>syntymavuosi integer
+<pre class="sh_sql code-highlight"><code>syntymavuosi integer
 </code></pre>
 
 <p>
   Korkeintaan 200 merkkiä pitkä nimi määriteltäisiin taas seuraavasti.
 </p>
 
-<pre class="sh_java code-highlight"><code>nimi varchar(200)
+<pre class="sh_sql code-highlight"><code>nimi varchar(200)
 </code></pre>
 
 <p>
   Henkilön syntymävuoden ja nimen tallentamiseen tarkoitettu taulu määriteltäisiin seuraavasti. Alla on oletettu, että nimi ei ole koskaan yli 200 merkkiä pitkä.
 </p>
 
-<pre class="sh_java code-highlight"><code>CREATE TABLE Henkilo (
+<pre class="sh_sql code-highlight"><code>CREATE TABLE Henkilo (
     syntymavuosi integer,
     nimi varchar(200)
 )
@@ -386,7 +386,7 @@ sqlite>
   Tietokantataulun poistaminen onnistuu <strong>DROP TABLE</strong> <em>TAULUN_NIMI</em> -lauseella, missä taulun nimi on poistettavan taulun nimi. Esimerkiksi edellä luodun Henkilo-taulun poistaminen onnistuisi seuraavasti.
 </p>
 
-<pre class="sh_java code-highlight"><code>DROP TABLE Henkilo
+<pre class="sh_sql code-highlight"><code>DROP TABLE Henkilo
 </code></pre>
 
 <p>
@@ -409,7 +409,7 @@ sqlite>
     SQLiten tietokantataulut saadaan selville komennolla <code>SELECT * FROM sqlite_master</code>.
   </p>
 
-<pre class="sh_java code-highlight"><code>SELECT * FROM sqlite_master
+<pre class="sh_sql code-highlight"><code>SELECT * FROM sqlite_master
 </code></pre>
   
 
@@ -431,7 +431,7 @@ sqlite>
     Esimerkiksi
   </p>
 
-<pre class="sh_java code-highlight"><code>PRAGMA TABLE_INFO(Henkilo)
+<pre class="sh_sql code-highlight"><code>PRAGMA TABLE_INFO(Henkilo)
 </code></pre>
   
   
@@ -451,7 +451,7 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>INSERT INTO <em>TAULUN_NIMI</em> (<em>sarake1</em>, <em>sarake2</em>, <em>sarake3</em>)
+<pre class="sh_sql code-highlight"><code>INSERT INTO <em>TAULUN_NIMI</em> (<em>sarake1</em>, <em>sarake2</em>, <em>sarake3</em>)
     VALUES (<em>'merkkijono hipsuissa'</em>,<em>'numero ei'</em>, 123)
 </code></pre>
 
@@ -461,7 +461,7 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
+<pre class="sh_sql code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
     VALUES (1923, 'Edgar Frank Codd')
 </code></pre>
 
@@ -473,7 +473,7 @@ sqlite>
   Vastaavasti vuonna 1947 syntyneen Raymond Boycen lisääminen tietokantatauluun Henkilo onnistuu seuraavasti.
 </p>
 
-<pre class="sh_java code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
+<pre class="sh_sql code-highlight"><code>INSERT INTO Henkilo (syntymavuosi, nimi)
     VALUES (1947, 'Raymond Boyce')
 </code></pre>
 
@@ -492,13 +492,13 @@ sqlite>
   Ilman rajausehtoa kyselyn rakenne on seuraava.
 </p>
 
-<pre class="sh_java code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
+<pre class="sh_sql code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
 </code></pre>
 
 <p>
   Rajausehdon kanssa kyselyn rakenne on seuraava.
 
-<pre class="sh_java code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
+<pre class="sh_sql code-highlight"><code>SELECT <em>sarake1</em>, <em>sarake2</em> FROM <em>TAULUN_NIMI</em>
     WHERE <em>rajausehto</em>
 </code></pre>
 
@@ -540,14 +540,14 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo
+<pre class="sh_sql code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo
 </code></pre>
 
 <p>
   Valinta henkilöihin, jotka ovat syntyneet ennen vuotta 1950 onnistuu seuraavasti. 
 </p>
 
-<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
+<pre class="sh_sql code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
 </code></pre>
 
 
@@ -562,14 +562,14 @@ sqlite>
     Hakukyselyn <code>SELECT</code>-komentoa seuraava sarakelistaus voidaan korvata tähtimerkillä * jos halutaan hakea kaikki tietokantataulun sarakkeet. Olettaen, että taulussa Henkilo on vain sarakkeet syntymavuosi ja nimi, kysely:
   </p>
   
-<pre class="sh_java code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
+<pre class="sh_sql code-highlight"><code>SELECT syntymavuosi, nimi FROM Henkilo WHERE syntymavuosi &lt; 1950
 </code></pre>
 
   <p>
     Voidaan korvata kyselyllä
   </p>
   
-<pre class="sh_java code-highlight"><code>SELECT * FROM Henkilo WHERE syntymavuosi &lt; 1950
+<pre class="sh_sql code-highlight"><code>SELECT * FROM Henkilo WHERE syntymavuosi &lt; 1950
 </code></pre>
 
 
@@ -627,7 +627,7 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>UPDATE <em>TAULUN_NIMI</em>
+<pre class="sh_sql code-highlight"><code>UPDATE <em>TAULUN_NIMI</em>
     SET <em>sarake1='uusiarvo'</em>, <em>sarake2=1234</em>
     WHERE <em>sarake3='rajausarvo'</em>
 </code></pre>
@@ -637,7 +637,7 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>UPDATE Henkilo
+<pre class="sh_sql code-highlight"><code>UPDATE Henkilo
     SET nimi='Joni S'
     WHERE nimi='Joni'
 </code></pre>
@@ -652,7 +652,7 @@ sqlite>
   Tiedon poistaminen tietokantataulusta onnistuu <strong>DELETE FROM</strong> -lauseella. Lauseeseen määritellään lisäksi tietokantataulu, mistä tietoa poistetaan, ja mahdollisesti ehtoja, jotka rajaavat poistettavia rivejä. Yksinkertaisimmillaan komennolla poistetaan kaikki rivit annetusta taulusta seuraavasti.
 </p>
 
-<pre class="sh_java code-highlight"><code>DELETE FROM <em>TAULUN_NIMI</em>
+<pre class="sh_sql code-highlight"><code>DELETE FROM <em>TAULUN_NIMI</em>
 </code></pre>
 
 <p>
@@ -660,21 +660,21 @@ sqlite>
 </p>
 
 
-<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1920
+<pre class="sh_sql code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1920
 </code></pre>
 
 <p>
   Poistoehtoon voi rakentaa loogisen lauseen, joka sisältää <code>AND</code> ja <code>OR</code> -määreitä. Näiden avulla poistorajausta voi tehdä laajemmin. Alla olevassa esimerkissä poistetaan henkilö (tai henkilöt), joiden syntymävuosi on 1947 ja joiden nimi on 'Raymond Boyce'.
 </p>
 
-<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1947 AND nimi = 'Raymond Boyce'
+<pre class="sh_sql code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi = 1947 AND nimi = 'Raymond Boyce'
 </code></pre>
 
 <p>
   Pienempi kuin ja suurempi kuin -vertailuoperaatiot sekä erisuuri kuin vertailuoperaatiot ovat myös mahdollisia. Alla olevassa esimerkissä poistetaan kaikki henkilöt, joiden syntymävuosi on pienempi kuin 2000 ja joiden nimi ei ole 'Boyce-Codd'.
 </p>
 
-<pre class="sh_java code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi &lt; 2000 AND nimi != 'Boyce-Codd'
+<pre class="sh_sql code-highlight"><code>DELETE FROM Henkilo WHERE syntymavuosi &lt; 2000 AND nimi != 'Boyce-Codd'
 </code></pre>
 
 
@@ -703,7 +703,7 @@ sqlite>
       CREATE
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>CREATE TABLE Opiskelija (
+<pre class="sh_sql code-highlight"><code>CREATE TABLE Opiskelija (
     opiskelijanumero integer,
     nimi varchar(60),
     sahkopostiosoite varchar(40)
@@ -719,7 +719,7 @@ sqlite>
       DROP
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>DROP TABLE Opiskelija
+<pre class="sh_sql code-highlight"><code>DROP TABLE Opiskelija
 </code></pre>
     </td>
   </tr>
@@ -731,7 +731,7 @@ sqlite>
       INSERT
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>INSERT INTO
+<pre class="sh_sql code-highlight"><code>INSERT INTO
     Opiskelija (opiskelijanumero, nimi, sahkopostiosoite)
     VALUES (1008286, 'Ari', 'posti@osoite.net');
 </code></pre>
@@ -745,7 +745,7 @@ sqlite>
       SELECT
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>SELECT nimi FROM Opiskelija
+<pre class="sh_sql code-highlight"><code>SELECT nimi FROM Opiskelija
 </code></pre>
     </td>
   </tr>
@@ -757,7 +757,7 @@ sqlite>
       UPDATE
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>UPDATE Opiskelija
+<pre class="sh_sql code-highlight"><code>UPDATE Opiskelija
     SET nimi='Ari V'
     WHERE opiskelijanumero=1008286
 </code></pre>
@@ -771,7 +771,7 @@ sqlite>
       DELETE
     </td>
     <td>
-<pre class="sh_java code-highlight"><code>DELETE FROM Opiskelija
+<pre class="sh_sql code-highlight"><code>DELETE FROM Opiskelija
     WHERE opiskelijanumero=1008286
 </code></pre>
     </td>
@@ -1367,7 +1367,7 @@ ResultSet resultSet = statement.executeQuery();
   Kun käyttäjän syöttämä merkkijono lisätään suoraan osaksi kyselyä, voi käyttäjä syöttää SQL-lauseita komentoonsa. Jos käyttäjä syöttää ohjelmaan esimerkiksi merkkijono <code>a' OR 'a'='a</code>, on suoritettava SQL-lause lopulta muotoa:
 </p>
 
-<pre class="sh_java code-highlight"><code>SELECT * FROM Pyora WHERE merkki = 'a' OR 'a'='a'
+<pre class="sh_sql code-highlight"><code>SELECT * FROM Pyora WHERE merkki = 'a' OR 'a'='a'
 </code></pre>
 
 <p>
