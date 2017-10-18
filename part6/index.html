@@ -361,7 +361,7 @@ public class CachedAsiakasDao extends AsiakasDao implements Dao&lt;Asiakas, Inte
 
     @Override
     public Asiakas findOne(Integer key) throws SQLException {
-        if (asiakkaatAvaimilla.containsKey(key)) {
+        if (!asiakkaatAvaimilla.containsKey(key)) {
             Asiakas asiakas = super.findOne(key);
             asiakkaatAvaimilla.put(key, asiakas);
         }
