@@ -126,19 +126,6 @@
 </div>
 
 
-
-<div class="hint">
-  <div class="hint__header">
-    <i class="fa fa-info-circle hint__icon"></i>7. osan tehtävät julkaistaan vielä tänään..
-  </div>
-
-  <div class="hint__body">
-    
-
-
-  </div>
-</div>
-
 <h1 class="material-heading">
     Jotain muuta kuin relaatiomallia noudattavat tietokannat
 
@@ -217,8 +204,7 @@
   Seuraavassa esimerkissä käynnistetään Redis-konsoli, asetetaan arvo avaimille <em>arto, aino</em> ja <em>olli</em>. Haetaan kannasta muutamaa avainta vastaavia tietoja ja tuhotaan avaimeen <em>arto</em> liittyvä arvo.
 </p>
 
-<pre>
-melkki$ redis-cli
+<pre class="sample-output">melkki$ redis-cli
 127.0.0.1:6379> set arto "olen arto 29 vuotta, yliopisto-opettaja"
 OK
 127.0.0.1:6379> set aino "olen aino 21 vuotta, pajaohjaaja"
@@ -261,8 +247,7 @@ OK
   Tarkastellaan tästä estimerkkinä internetistä <a href="http://openweathermap.org/api">Open Weather API:sta</a> eri kaupunkien säätietoja hakevaa ohjelmaa. Ohjelma toiminta näyttää seuraavalta:
 </p>
 
-<pre>
-kaupunki: helsinki
+<pre class="sample-output">kaupunki: helsinki
 few clouds, temperature 15.770000000000039 celcisus
 kaupunki: turku
 Sky is Clear, temperature 16.0 celcisus
@@ -279,8 +264,7 @@ kaupunki:
   Seuraavassa sääpalvelun toteuttavan luokan <stron>WeatherService</strong> toteutus, joka hyödyntää <a href="https://github.com/xetorthio/jedis">Jedis</a>-kirjastoa Redis-operaatioiden tekemiseen:
 </p>
 
-<pre class="sh_java">
-import redis.clients.jedis.Jedis;
+<pre class="sh_java code-highlight"><code>import redis.clients.jedis.Jedis;
 
 public class WeatherService {
     private Jedis jedis;
@@ -324,42 +308,38 @@ public class WeatherService {
 
     // apumetodeja...
 }
-</pre>
+</code></pre>
 
 <p>
   Palvelua käytetään seuraavasti:
 </p>
 
-<pre class="sh_java">
-  WeatherService weather = new WeatherService();
-  weather.weatherFor("Helsinki");
-</pre>
+<pre class="sh_java code-highlight"><code>WeatherService weather = new WeatherService();
+weather.weatherFor("Helsinki");
+</code></pre>
 
 <p>
   Kun haemme ensimmäistä kertaa esim. Helsingin tietoja, etsitään niitä (metodissa <code>getDataFor</code>) ensin rediksestä:
 </p>
 
-<pre class="sh_java">
-  // nyt city = "Helsinki"
-  String weatherInfo = jedis.get(city);
-</pre>
+<pre class="sh_java code-highlight"><code>// nyt city = "Helsinki"
+String weatherInfo = jedis.get(city);
+</code></pre>
 
 <p>
   tiedot eivät löydy, joten metodi palauttaa <code>null</code>. Tämän takia mennään if-haaraan, jossa tiedot haetaan apumetodin avulla internetistä. Haetut tiedot talletetaan ensin Redisiin:
 </p>
 
-<pre class="sh_java">
-  // nyt city="Helsinki" ja weatherInfo Helsingin sään 'raakadata'
-  jedis.set(city, weatherInfo);
-</pre>
+<pre class="sh_java code-highlight"><code>// nyt city="Helsinki" ja weatherInfo Helsingin sään 'raakadata'
+jedis.set(city, weatherInfo);
+</code></pre>
 
 <p>
   talletetulle datalle asetetaan myös elinaika sekunteina:
 </p>
 
-<pre class="sh_java">
-  jedis.expire(city, 600);
-</pre>
+<pre class="sh_java code-highlight"><code>jedis.expire(city, 600);
+</code></pre>
 
 <p>
   tämän jälkeet data palautetaan kutsujalle.
@@ -396,14 +376,13 @@ public class WeatherService {
   Dokumenttikannoissa käytetään tiedon loogisena esitysmuotona yleensä <a href="https://fi.wikipedia.org/wiki/JSON">JSON</a>:ia. Seuraavassa kurssia </em>Ohjelmoinnin perusteet</em> esittävä JSON-dokumentti:
 </p>
 
-<pre class="sh_jscript">
-{
+<pre class="sh_javascript code-highlight"><code>{
   "id": ObjectId("10"),
   "nimi": "Ohjelmoinnin perusteet",
   "laajuus": 5,
   "luennot": [ "Arto Vihavainen", "Matti Luukkainen" ]
 }
-</pre>
+</code></pre>
 
 <p>
   JSON-dokumentti koostuu avain-arvo-pareista. Avainta vastaava arvo merkitään kaksoispisteellä erotettuna avaimen yhteyteen.
@@ -417,8 +396,7 @@ public class WeatherService {
   Seuraavassa on opiskelijaa kuvaava dokumentti:
 </p>
 
-<pre class="sh_jscript">
-{
+<pre class="sh_javascript code-highlight"><code>{
   "id" : ObjectId("59"),
   "nimi" : "Pekka Mikkola",
   "opiskelijanumero" : 14112345,
@@ -428,7 +406,7 @@ public class WeatherService {
                 "postitoimipaikka" : "Helsinki"
              }
 }
-</pre>
+</code></pre>
 
 <p>
   Nyt kentän osoite arvona on <em>olio</em>, jolla on itsellään omat kenttänsä.
@@ -442,25 +420,25 @@ public class WeatherService {
   Kuten edellä opiskelijan kohdalla näimme, on dokumenttikannoissa mahdollista sisällyttää olioita toistensa sisään. Tilanne olisi myös voitu mallintaa "relaatiomallin tapaan" siten, että osoitteita varten olisi oma kokoelmansa, ja yksittäinen osoite mallinnettaisiin omana dokumenttina:
 </p>
 
-<pre>
-{
+<pre class="sh_javascript code-highlight"><code>{
   "id" : ObjectId("123"),
   "katu" : "Tehtaankatu 10 B 1",
   "postinumero" : "00120",
   "postitoimipaikka" : "Helsinki"
 }
-</pre>
+</code></pre>
 
-Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
+<p>
+  Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
+</p>
 
-<pre>
-{
+<pre class="sh_javascript code-highlight"><code>{
   "id" : ObjectId("59"),
   "nimi" : "Pekka Mikkola",
   "opiskelijanumero" : 14112345,
   "osoite" : ObjectId("123")
-}
-</pre>
+  }
+</code></pre>
 
 <p>
   Toisin kuin relaatiotietokantojen tapauksessa, dokumenttikannat <em>eivät tarjoa</em> tietokannan tasolla tapahtuvia <em>liitosoperaatiota</em>, ja edellisen esimerkin tapauksessa sovelluksen olisi itse huolehdittava siitä, että opiskelijaa haettaessa haetaan myös opiskelijan osoite tietokannasta.
@@ -486,8 +464,7 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
   Kokoelma Opiskelija:
 </p>
 
-<pre class="sh_js">
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": ObjectId("10"),
     "nimi" : "Lea Kutvonen",
@@ -499,14 +476,13 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     "opiskelijanumero" : 14012345
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Kokoelma kurssi:
 </p>
 
-<pre class="sh_js">
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": ObjectId("34"),
     "nimi" : "Ohjelmoinnin perusteet",
@@ -518,14 +494,13 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     "laajuus" : 1
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Suoritus olisi nyt "liitostaulumainen" kokoelma:
 </p>
 
-<pre class="sh_js">
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": 55
     "kurssi_id" : ObjectId("34"),
@@ -545,7 +520,7 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     "arvosana" : 2
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Vaihtoehtoja on kuitenkin myös muita. Käyttötapauksista riippuen saattaisi olla edullista tallettaa tieto suorituksista ("liitosdokumentin" id) myös kurssin ja opiskelijan yhteyteen:
@@ -555,8 +530,7 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
   Kokoelma Opiskelija:
 </p>
 
-<pre>
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": ObjectId("10")
     "nimi" : "Lea Kutvonen",
@@ -570,14 +544,13 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     "suoritukset" : [ ObjectId("57") ]
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Kokoelma kurssi:
 </p>
 
-<pre>
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": ObjectId("34")
     "nimi" : "Ohjelmoinnin perusteet",
@@ -591,14 +564,13 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     "suorittajat" : [ObjectId("10"), ObjectId("11")]
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Jossain tapauksessa paras ratkaisu olisi luopua liitoksena toimivista dokumenteista eli kokoelmasta suoritukset ja tallettaa suoritukset kokonaisuudessaan opiskelija-dokumentteihin:
 </p>
 
-<pre>
-[
+<pre class="sh_javascript code-highlight"><code>[
   {
     "id": ObjectId("10")
     "nimi" : "Lea Kutvonen",
@@ -629,7 +601,7 @@ Opiskelijadokumentti sisältäisi nyt ainoastaan viitteen osoitedokumenttiin:
     ]
   }
 ]
-</pre>
+</code></pre>
 
 <p>
   Tämä ratkaisu vaikeuttaisi kurssin suorittajien selvittämistä, joten joissain käyttötapauksissa saattaisi olla edullista sisällyttää suoritukset <em>molempiin</em> opiskelijoihin ja kurssiin.
@@ -695,11 +667,10 @@ EmpId Lastname  Firstname Sex Salary  YearsEmployed
 <p>Jos nyt haluttaisiin selvittää yrityksessä vähintään 5 vuotta työskennelleiden keskipalkka, tehtäisiin kysely
 </p>
 
-<pre class="sh_sql">
-SELECT AVG(Salary)
+<pre class="sh_sql code-highlight"><code>SELECT AVG(Salary)
   FROM Employees
   WHERE YearsEmployed &gt; 4
-</pre>
+</code></pre>
 
 <p>
   Tässä olisi relaatiotietokannan tapauksessa luettava taulun <em>koko data</em> levyltä siitä huolimatta, että kysely ei tarvitse kuin pientä osaa taulun datasta. Jos taulussa olisi satoja sarakkeita (mikä on varsin tyypillistä analytiikkatietokannoissa), olisi kyselyn tekeminen erittäin hidasta johtuen juuri tarpeettoman raskaasta, kaiken datan hakevasta levyoperaatiosta.
@@ -749,26 +720,24 @@ YearsEmployed:1;6;3;9
   Joissain tilanteissa entiteettien suhteiden selvittäminen relaatiotietokannassa saattaa olla erittäin hankalaa. Oletetaan, että meillä on Henkilöitä kuvaava taulu:
 </p>
 
-<pre class="sh_sql">
-CREATE TABLE Henkilo (
+<pre class="sh_sql code-highlight"><code>CREATE TABLE Henkilo (
   id integer not null PRIMARY KEY,
   nimi string not null
 )
-</pre>
+</code></pre>
 
 <p>
   sekä taulu, joka liittää vanhemmat ja lapset toisiinsa:
 </p>
 
-<pre class="sh_sql">
-CREATE TABLE Vanhemmuus (
+<pre class="sh_sql code-highlight"><code>CREATE TABLE Vanhemmuus (
   id integer not null PRIMARY KEY,
   lapsi_id integer,
   vanhempi_id integer,
   FOREIGN KEY (lapsi_id) references Henkilo(id),
   FOREIGN KEY (vanhempi_id) references Henkilo(id)
 )
-</pre>
+</code></pre>
 
 <p>
   Jos nyt haluaisimme selvittää henkilön "Arto" kaikki sukulaiset, huomaamme, että kyselyn tekeminen SQL:llä olisi erittäin hankalaa.
@@ -896,16 +865,16 @@ RETURN p
 
 
 <h1 class="material-heading">
-   ...
+   CAP-teoreema
 
 </h1>
 
 <p>
-  Merkittävä osa sovellusten toiminnallisuuden skaalaamisesta suuremmille käyttäjäjoukoille perustuu nykyään sovellusten toiminnallisuuden kopiointiin useammalle tietokoneelle eli palvelimelle. Kun sovellusta pyörittävä palvelin ei pysty enää vastaamaan kaikkiin sille tehtyihin pyyntöihin, hankitaan uusi palvelin, mille sovellus kopioidaan. Osa pyynnöistä ohjataan jatkossa tälle palvelimelle, jolloin palvelimet pystyvät yhdessä käsittelemään suuremman määrän pyyntöjä.
+  Merkittävä osa sovellusten toiminnallisuuden skaalaamisesta suuremmille käyttäjäjoukoille perustuu nykyään sovellusten toiminnallisuuden kopiointiin useammalle tietokoneelle eli palvelimelle. Kun sovellusta pyörittävä palvelin ei pysty enää vastaamaan kaikkiin sille tehtyihin pyyntöihin, hankitaan uusi palvelin, johon sovellus kopioidaan. Osa pyynnöistä ohjataan jatkossa tälle palvelimelle, jolloin palvelimet pystyvät yhdessä käsittelemään pyynnöt.
 </p>
 
 <p>
-  Sovellusten kopiointi useammalle koneelle aiheuttaa haasteita tiedon hallintaan ja oikeellisuuteen liittyen. Jos sovelluksen toteuttaja haluaa, että jokaisella sovelluksella on aina sama tieto -- eli että pyyntöön tulee ajankohtainen vastaus palvelimesta riippumatta -- tulee palvelinten kommunikoida ja päivittää tietoa keskenään. Pankit eivät esimerkiksi voi hyväksyä tilannetta, missä yhdellä palvelimella tilillä olisi rahaa ja yhdellä ei, 
+  Sovelluksen kopiointi useammalle palvelimelle aiheuttaa haasteita tiedon hallintaan ja oikeellisuuteen liittyen. Jos sovelluksen toteuttaja haluaa, että jokaisella sovelluksella oleva tieto on aina ajankohtaista ja että pyyntöön annettava vastaus on aina ajankohtainen palvelimesta riippumatta, tulee palvelinten kommunikoida ja päivittää tietoa keskenään. Pankit eivät esimerkiksi voi hyväksyä tilannetta, missä yhdellä palvelimella tilillä olisi rahaa ja yhdellä ei. 
 </p>
 
 <p>
@@ -986,6 +955,76 @@ RETURN p
 </ul>
 
 
+<div class="exercise">
+  <div class="exercise__header">
+    <a data-toggle="collapse" class="exercise__toggle">
+      <i class="fa fa-pencil exercise__icon"></i>
+      <h1 class="exercise__heading">Minifoorumi</h1>
+
+      <i class="fa fa-caret-down exercise__arrow"></i>
+    </a>
+  </div>
+
+  <div class="collapse">
+    <div class="exercise__body">
+      
+  <p>
+    Kurssin viimeisen osan tehtävä käsittelee koko kurssin aihepiiriä ja on hieman laajempi, kertaava tehtävä. Tehtävä on yhden viikon ohjelmointitehtävien arvoinen -- viimeisen viikon ohjelmointitehtävällä voi paikata yhden aiemman viikon ohjelmointitehtävät tai kotona tehtävät "ei ohjelmointitehtävät".
+  </p>
+
+  <p>
+    Tehtävässä tulee luoda pieni foorumi, missä on viestiketjuja. Jokaisella viestiketjulla on aloitusviesti sekä aloitusviestin jälkeen lähetetyt viestit. Kun käyttäjä menee foorumille, näkee hän listauksessa viestiketjujen aloitusviestit sekä viestiketjun koon.
+  </p>
+
+  <pre>  
+  <strong>Viestiketju</strong>                      <strong>Viestejä</strong>
+  Java on jees!                    8	
+  Python on jeesimpi!              6	
+  LISP on parempi kuin...          2		
+  Ohjelmointikielet on turhia..    1	
+  ...
+
+  Lisää viestiketju:
+
+  [käyttäjä voisi aloittaa uuden viestiketjun] 
+  </pre>
+
+  <p>
+    Viestiketjut on järjestetty viimeiseksi aktiivisena olleen viestiketjun mukaan. Listauksessa ylimpänä on siis aina se viestiketju, minkä viimeisin viesti on tuorein. Sivulla tulee näyttää korkeintaan 100 uusinta viestiketjua.
+  </p>
+
+  <p>
+    Yksittäiseen viestiketjuun taas käsiksi valitsemalla viestiketjun listalta. Esimerkiksi ylläolevalta listalta voisi valita keskustelun "Java on jees!", jolloin viestiketjun sisältämät viestit näytetään uudella sivulla:
+  </p>
+
+  <pre>
+  <strong>Viestiketju: Java on jees</strong>
+
+  Mun mielestä Java on just hyvä kieli. t. Arto
+  No eipäs, Ruby on parempi. t. Matti
+  Ada on selkeästi parempi kuin kumpikin noista. t. Ada
+  ...
+
+  Lisää viesti: 
+
+  [käyttäjä voisi kirjoittaa viestin..]
+  </pre>
+
+  <p>
+    Tehtävän tekeminen kannattaa aloittaa yksittäisen viestiketjun toteuttamisesta, eli siitä, että käyttäjä voi lisätä järjestelmään viestejä. Tämän jälkeen viestit voi kytkeä johonkin viestiketjuun, jonka jälkeen viestiketjuille lluodaan listaus sovelluksen "etusivulle". Tämän jälkeen kannattaa hahmotella viestien lukumäärän laskemista etusivua varten sekä viestien järjestämistä.
+  </p>
+
+  <p>
+    Huom! Käytä tehtävässä tietokannanhallintajärjestelmänä SQLiteä ja toteuta sovelluksen tarvitsema tietokanta projektin kansion "db" sisältämään "forum.db"-tiedostoon.
+  </p>
+  
+
+    </div>
+  </div>
+</div>
+
+
+
 <h1 class="material-heading">
     Koeasiaa
 
@@ -1007,9 +1046,9 @@ RETURN p
   <strong>Kokeeseen saa ottaa mukaan "lunttilapun".</strong> Lunttilappu on kaksipuolinen, A4-kokoinen, itse käsin täytetty paperi. Lunttilappuun tulee merkitä nimi ja opiskelijanumero, ja se tulee jättää kokeen palautuksen yhteydessä tenttivalvojille.
 </p> 
 
-<!-- 
-     TODO: osaamisen arviointi
-   -->
+<div class="quiznator-plugin" data-quiz-id="59ea34be421d660004e5416e"></div>
+
+
 
         </div>
       </div>
