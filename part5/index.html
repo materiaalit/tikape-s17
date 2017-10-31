@@ -679,7 +679,7 @@
   </p>
 
   <p>
-    Esimerkiksi vanhimman (tai vanhimmat, jos tämä ei ole yksikäsitteistä) opiskelijan löytää -- muunmuassa -- etsimällä kaikista pienimmän mahdollisimman syntymävuoden (kyselyn tulos on taulu), jonka jälkeen vastaustaulussa olevaa tulosta kaikkien opiskelijoiden syntymävuosiin.
+    Esimerkiksi vanhimman (tai vanhimmat, jos tämä ei ole yksikäsitteistä) opiskelijan löytää -- muunmuassa -- etsimällä kaikista pienimmän mahdollisimman syntymävuoden (kyselyn tulos on taulu), jonka jälkeen vastaustaulussa olevaa tulosta verrataan kaikkien opiskelijoiden syntymävuosiin.
   </p>
 
 <pre class="sh_sql code-highlight"><code>SELECT * FROM Opiskelija
@@ -1742,7 +1742,7 @@ public class Main {
 <pre class="sh_java code-highlight"><code>Spark.post("/opiskelijat", (req, res) -&gt; {
     String nimi = req.queryParams("nimi");
     nimet.add(nimi);
-    response.redirect("/opiskelijat");
+    res.redirect("/opiskelijat");
     return "";
 });
 </code></pre>
